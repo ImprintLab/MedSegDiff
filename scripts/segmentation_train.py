@@ -7,6 +7,7 @@ from guided_diffusion import dist_util, logger
 from guided_diffusion.resample import create_named_schedule_sampler
 from guided_diffusion.bratsloader import BRATSDataset, BRATSDataset3D
 from guided_diffusion.isicloader import ISICDataset
+from guided_diffusion.spiderloader import SPIDERDataset
 from guided_diffusion.custom_dataset_loader import CustomDataset
 from guided_diffusion.script_util import (
     model_and_diffusion_defaults,
@@ -40,6 +41,20 @@ def main():
 
         ds = BRATSDataset3D(args.data_dir, transform_train, test_flag=False)
         args.in_ch = 5
+    elif args.data_name.lower() == 'spider':
+        tran_list = [
+            # Add desired augmentations here
+        ]
+        transform_train = transforms.Compose(tran_list) if tran_list else None
+
+        logger.log(f"Loading SPIDER dataset from: {args.data_dir}")
+        ds = SPIDERDataset(
+            data_path=args.data_dir,
+            image_size=args.image_size,
+            transform=transform_train
+        )
+        args.in_ch = 4
+        logger.log(f"Set input channels (in_ch) to {args.in_ch} for SPIDER")
     else :
         tran_list = [transforms.Resize((args.image_size,args.image_size)), transforms.ToTensor(),]
         transform_train = transforms.Compose(tran_list)
