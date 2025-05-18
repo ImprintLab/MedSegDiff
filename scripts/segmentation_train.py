@@ -7,7 +7,7 @@ from guided_diffusion import dist_util, logger
 from guided_diffusion.resample import create_named_schedule_sampler
 from guided_diffusion.bratsloader import BRATSDataset, BRATSDataset3D
 from guided_diffusion.isicloader import ISICDataset
-from guided_diffusion.custom_dataset_loader import CustomDataset
+from guided_diffusion.custom_dataset_loader import CustomDataset,CustomDataset3D
 from guided_diffusion.script_util import (
     model_and_diffusion_defaults,
     create_model_and_diffusion,
@@ -15,6 +15,7 @@ from guided_diffusion.script_util import (
     add_dict_to_argparser,
 )
 import torch as th
+from pathlib import Path
 from guided_diffusion.train_util import TrainLoop
 from visdom import Visdom
 viz = Visdom(port=8850)
@@ -40,7 +41,13 @@ def main():
 
         ds = BRATSDataset3D(args.data_dir, transform_train, test_flag=False)
         args.in_ch = 5
-    else :
+    elif any(Path(args.data_dir).glob("*\*.nii.gz")):
+        tran_list = [transforms.Resize((args.image_size,args.image_size)),]
+        transform_train = transforms.Compose(tran_list)
+        print("Your current directory : ",args.data_dir)
+        ds = CustomDataset3D(args, args.data_dir, transform_train)
+        args.in_ch = 4
+    else:
         tran_list = [transforms.Resize((args.image_size,args.image_size)), transforms.ToTensor(),]
         transform_train = transforms.Compose(tran_list)
         print("Your current directory : ",args.data_dir)
