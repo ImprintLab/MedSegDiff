@@ -3,6 +3,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision.utils as vutils
 
 
 softmax_helper = lambda x: F.softmax(x, 1)
@@ -45,16 +46,12 @@ class no_op(object):
 def staple(a):
     # a: n,c,h,w detach tensor
     mvres = mv(a)
-    gap = 0.4
-    if gap > 0.02:
-        for i, s in enumerate(a):
-            r = s * mvres
-            res = r if i == 0 else torch.cat((res,r),0)
-        nres = mv(res)
-        gap = torch.mean(torch.abs(mvres - nres))
-        mvres = nres
-        a = res
-    return mvres
+    for i, s in enumerate(a):
+        r = s * mvres
+        res = r if i == 0 else torch.cat((res,r),0)
+    nres = mv(res)
+    a = res
+    return nres
 
 def allone(disc,cup):
     disc = np.array(disc) / 255
@@ -69,10 +66,7 @@ def dice_score(pred, targs):
     return 2. * (pred*targs).sum() / (pred+targs).sum()
 
 def mv(a):
-    # res = Image.fromarray(np.uint8(img_list[0] / 2 + img_list[1] / 2 ))
-    # res.show()
-    b = a.size(0)
-    return torch.sum(a, 0, keepdim=True) / b
+    return torch.mean(a, dim=0, keepdim=True)
 
 def tensor_to_img_array(tensor):
     image = tensor.cpu().detach().numpy()
@@ -85,10 +79,10 @@ def export(tar, img_path=None):
     if c == 3:
         vutils.save_image(tar, fp = img_path)
     else:
-        s = th.tensor(tar)[:,-1,:,:].unsqueeze(1)
-        s = th.cat((s,s,s),1)
+        s = torch.tensor(tar)[:,-1,:,:].unsqueeze(1)
+        s = torch.cat((s,s,s),1)
         vutils.save_image(s, fp = img_path)
 
 def norm(t):
-    m, s, v = torch.mean(t), torch.std(t), torch.var(t)
+    m, s = torch.mean(t), torch.std(t)
     return (t - m) / s
