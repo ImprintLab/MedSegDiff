@@ -410,6 +410,17 @@ class DPM_Solver:
         if self.correcting_x0_fn is not None:
             x0 = self.correcting_x0_fn(x0, t)
         return x0
+    
+    def data_prediction_fn_last_step(self, x, t):
+        """
+        Return both model predictions (with corrector).
+        """
+        noise, cal = self.model(torch.cat((self.img,x), dim=1).to(dtype = torch.float), t)
+        alpha_t, sigma_t = self.noise_schedule.marginal_alpha(t), self.noise_schedule.marginal_std(t)
+        x0 = (x - sigma_t * noise[:,0:1,:,:]) / alpha_t
+        if self.correcting_x0_fn is not None:
+            x0 = self.correcting_x0_fn(x0, t)
+        return x0, cal
 
     def model_fn(self, x, t):
         """
@@ -419,6 +430,16 @@ class DPM_Solver:
             return self.data_prediction_fn(x, t)
         else:
             return self.noise_prediction_fn(x, t)
+        
+    def model_fn_last_step(self, x, t):
+        """
+        Convert the model to the noise prediction model or the data prediction model for the last diffusion step. 
+        """
+        if self.algorithm_type == "dpmsolver++":
+            return self.data_prediction_fn_last_step(x, t)
+        else:
+            x = torch.cat((self.img,x), dim=1).to(dtype = torch.float)
+            return self.model(x, t)
 
     def get_time_steps(self, skip_type, t_T, t_0, N, device):
         """Compute the intermediate time steps for sampling.
@@ -1189,10 +1210,15 @@ class DPM_Solver:
                     x = self.correcting_xt_fn(x, t, step + 1)
                 if return_intermediate:
                     intermediates.append(x)
-        cal = None
-        out = self.model(torch.cat((self.img,x), dim=1).to(dtype = torch.float), t)
+        
+        out = self.model_fn_last_step(x, t)
+
         if isinstance(out, tuple):
             x, cal = out
+        else:
+            x = out
+            cal = None
+
         if return_intermediate:
             return x, intermediates
         else:
