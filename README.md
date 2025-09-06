@@ -132,19 +132,18 @@ A setting to unleash all its potential is (MedSegDiff++):
 --image_size 256 --num_channels 512 --class_cond False --num_res_blocks 12 --num_heads 8 --learn_sigma True --use_scale_shift_norm True --attention_resolutions 24 
 ~~~
 Then train it with batch size ``--batch_size 64`` and sample it with ensemble number ``--num_ensemble 25``.
-## Be a part of MedSegDiff ! Authors are YOU !
-Welcome to contribute to MedSegDiff. Any technique can improve the performance or speed up the algorithm is appreciated🙏. I am writting MedSegDiff V2, aiming at Nature journals/CVPR like publication. I'm glad to list the contributors as my co-authors🤗.
+
 ## TODO LIST
 
 - [x] Fix bugs in BRATS. Add BRATS example.
-- [ ] Release REFUGE and DDIT dataloaders and examples
+- [x] Release REFUGE and DDIT dataloaders and examples
 - [x] Speed up sampling by DPM-solver
 - [ ] Inference of depth
 - [x] Fix bugs in Multi-GPU parallel
-- [ ] Sample and Vis in training
-- [ ] Release pre processing and post processing
+- [x] Sample and Vis in training
+- [x] Release pre processing and post processing
 - [x] Release evaluation
-- [ ] Deploy on HuggingFace
+- [x] Deploy on HuggingFace
 - [x] configuration
 
 ## Thanks
