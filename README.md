@@ -171,8 +171,6 @@ Please cite
 }
 ~~~
 
-## Buy Me A Coffee 🥤😉
-https://ko-fi.com/jundewu
 
 
 
