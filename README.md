@@ -1,11 +1,15 @@
 
 
-# MedSegDiff: Medical Image Segmentation with Diffusion Model
-MedSegDiff a Diffusion Probabilistic Model (DPM) based framework for Medical Image Segmentation. The algorithm is elaborated on our paper:
 
-[MedSegDiff: Medical Image Segmentation with Diffusion Probabilistic Model](https://arxiv.org/abs/2211.00611) (MIDL 2023)
+  # MedSegDiff: Medical Image Segmentation with Diffusion Model
+<img align="left" width="150" height="150" src="https://github.com/ImprintLab/MedSegDiff/blob/master/cover_image.png"> 
+MedSegDiff is a Diffusion Probabilistic Model (DPM) based framework for the Segmentation and Reconstruction of organs/tissues from the medical images.
 
-[MedSegDiff-V2: Diffusion based Medical Image Segmentation with Transformer](https://arxiv.org/pdf/2301.11798.pdf) (AAAI 2024 with Most Influential Paper Award)
+The algorithm is elaborated on our paper
+
+[MedSegDiff: Medical Image Segmentation with Diffusion Probabilistic Model](https://arxiv.org/abs/2211.00611) 
+
+[MedSegDiff-V2: Diffusion based Medical Image Segmentation with Transformer](https://arxiv.org/pdf/2301.11798.pdf).
 
 
 
