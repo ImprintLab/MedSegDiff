@@ -550,7 +550,7 @@ class GaussianDiffusion:
                 method="multistep",
             )
             sample = sample.detach()    ### MODIFIED: for DPM-Solver OOM issue
-            sample[:,-1,:,:] = norm(sample[:,-1,:,:])
+            #sample[:,-1,:,:] = norm(sample[:,-1,:,:])
             final["sample"] = sample
             final["cal"] = cal
 
